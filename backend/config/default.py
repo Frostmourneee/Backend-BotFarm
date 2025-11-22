@@ -15,11 +15,11 @@ class DefaultSettings(BaseSettings):
     APP_HOST: str = Field(default="http://0.0.0.0")
     APP_PORT: int = Field(default=8080)
 
-    POSTGRES_DB_NAME: str = Field(default="postgres")
-    POSTGRES_USERNAME: str = Field(default="admin")
+    POSTGRES_DB: str = Field(default="postgres")
+    POSTGRES_USER: str = Field(default="admin")
     POSTGRES_PASSWORD: str = Field(default="pwd")
 
-    POSTGRES_HOST: str = Field()
+    POSTGRES_HOST: str = Field(default="postgres")
     POSTGRES_PORT: int = Field(default=5432)
 
     # SECRET_KEY: str = environ.get("SECRET_KEY")
@@ -30,15 +30,19 @@ class DefaultSettings(BaseSettings):
     @property
     def database_settings(self) -> dict:
         return {
-            "database": self.POSTGRES_DB_NAME,
-            "user": self.POSTGRES_USERNAME,
-            "password": self.POSTGRES_PASSWORD,
+            "db_name": self.POSTGRES_DB,
+            "user": self.POSTGRES_USER,
+            "pwd": self.POSTGRES_PASSWORD,
             "host": self.POSTGRES_HOST,
             "port": self.POSTGRES_PORT,
         }
 
     @property
     def database_uri(self) -> str:
-        return "postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}".format(
-            **self.database_settings,
+        """
+        URI для асинхронного соединения
+        """
+        return (
+            "postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
+            .format(**self.database_settings)
         )

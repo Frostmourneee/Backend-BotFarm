@@ -4,13 +4,6 @@ include $(ENV_FILE)
 export $(shell sed 's/=.*//' $(ENV_FILE))
 endif
 
-args := $(wordlist 2, 100, $(MAKECMDGOALS))
-ifndef args
-MESSAGE = "No such command (or you pass two or many targets to ). List of possible commands: make help"
-else
-MESSAGE = "Done"
-endif
-
 # Commands
 help: ##@Help Show this help
 	@echo -e "Usage: make [target] ...\n"
@@ -24,6 +17,6 @@ up: ##@Docker Start app
 
 down: ##@Docker Stop app
 	docker compose down
-#
-#psql: ##@Database Connect to PostgreSQL database via psql util
-#	docker exec -it postgres_db psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
+
+psql: ##@Database Connect to PostgreSQL database via psql util
+	docker exec -it $(POSTGRES_HOST) psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
