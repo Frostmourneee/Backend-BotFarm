@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from uvicorn import run
 
 from backend.config.default import DefaultSettings
+from backend.config.utils import get_settings
 from backend.api.handlers import list_of_routes
 
 
@@ -28,7 +29,7 @@ def get_app() -> FastAPI:
         openapi_url="/openapi",
         version="1.0.0",
     )
-    settings = DefaultSettings()
+    settings = get_settings()
     bind_routes(application, settings)
     application.state.settings = settings
     return application
@@ -37,7 +38,7 @@ def get_app() -> FastAPI:
 app = get_app()
 
 if __name__ == "__main__":
-    settings_for_application = DefaultSettings()
+    settings_for_application = get_settings()
     run(
         "backend.__main__:app",
         host=urlparse(settings_for_application.APP_HOST).netloc,
