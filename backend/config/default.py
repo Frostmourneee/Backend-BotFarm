@@ -15,12 +15,12 @@ class DefaultSettings(BaseSettings):
     APP_HOST: str = Field(default="http://0.0.0.0")
     APP_PORT: int = Field(default=8080)
 
-    POSTGRES_DB: str = Field(default="postgres")
-    POSTGRES_USER: str = Field(default="admin")
-    POSTGRES_PASSWORD: str = Field(default="pwd")
+    BOT_POSTGRES_DB: str = Field(default="botfarm-postgres")
+    BOT_POSTGRES_USER: str = Field(default="admin")
+    BOT_POSTGRES_PASSWORD: str = Field(default="pwd")
 
-    POSTGRES_HOST: str = Field(default="postgres")
-    POSTGRES_PORT: int = Field(default=5432)
+    BOT_POSTGRES_HOST: str = Field(default="botfarm-postgres")
+    BOT_POSTGRES_PORT: int = Field(default=5432)
 
     # SECRET_KEY: str = environ.get("SECRET_KEY")
     # ALGORITHM: str = environ.get("ALGORITHM", "HS256")
@@ -30,11 +30,11 @@ class DefaultSettings(BaseSettings):
     @property
     def database_settings(self) -> dict:
         return {
-            "db_name": self.POSTGRES_DB,
-            "user": self.POSTGRES_USER,
-            "pwd": self.POSTGRES_PASSWORD,
-            "host": self.POSTGRES_HOST,
-            "port": self.POSTGRES_PORT,
+            "db_name": self.BOT_POSTGRES_DB,
+            "user": self.BOT_POSTGRES_USER,
+            "pwd": self.BOT_POSTGRES_PASSWORD,
+            "host": self.BOT_POSTGRES_HOST,
+            "port": self.BOT_POSTGRES_PORT,
         }
 
     @property

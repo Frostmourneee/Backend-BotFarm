@@ -16,12 +16,12 @@ config = context.config
 section = config.config_ini_section
 
 settings = get_settings()
-config.set_section_option(section, "DB_NAME", settings.POSTGRES_DB)
-config.set_section_option(section, "DB_USER", settings.POSTGRES_USER)
-config.set_section_option(section, "DB_PASSWORD", settings.POSTGRES_PASSWORD)
+config.set_section_option(section, "DB_NAME", settings.BOT_POSTGRES_DB)
+config.set_section_option(section, "DB_USER", settings.BOT_POSTGRES_USER)
+config.set_section_option(section, "DB_PASSWORD", settings.BOT_POSTGRES_PASSWORD)
 
-config.set_section_option(section, "DB_HOST", settings.POSTGRES_HOST)
-config.set_section_option(section, "DB_PORT", str(settings.POSTGRES_PORT))
+config.set_section_option(section, "DB_HOST", settings.BOT_POSTGRES_HOST)
+config.set_section_option(section, "DB_PORT", str(settings.BOT_POSTGRES_PORT))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

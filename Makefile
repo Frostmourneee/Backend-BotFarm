@@ -19,9 +19,9 @@ down: ##@Docker Stop app
 	docker compose down
 
 psql: ##@Database Connect to PostgreSQL database via psql util
-	docker exec -it $(POSTGRES_HOST) psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
+	docker exec -it $(BOT_POSTGRES_HOST) psql -U $(BOT_POSTGRES_USER) -d $(BOT_POSTGRES_DB)
 
-revision:  ##@Database Create new revision file automatically with prefix by datetime
+revision: ##@Database Create new revision file automatically with prefix by datetime
 	docker exec -it backend uv run alembic -c backend/db/alembic.ini revision --autogenerate
 
 upgrade:  ##@Database Apply all migrations to database
