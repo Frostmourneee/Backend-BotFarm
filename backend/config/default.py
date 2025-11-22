@@ -14,7 +14,7 @@ class DefaultSettings(BaseSettings):
 
     POSTGRES_DB_NAME: str = environ.get("POSTGRES_DB_NAME", "postgres")
     POSTGRES_USERNAME: str = environ.get("POSTGRES_USERNAME", "admin")
-    POSTGRES_PASSWORD: str = environ.get("DB_PASSWORD", "pwd")
+    POSTGRES_PASSWORD: str = environ.get("POSTGRES_PASSWORD", "pwd")
 
     # DB_URL: Optional[str] = environ.get("DB_URL")
     # POSTGRES_HOST: str = environ.get("POSTGRES_HOST", "localhost")
