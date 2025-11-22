@@ -15,7 +15,11 @@ class BaseTable(Base):
         primary_key=True,
         server_default=func.gen_random_uuid(),
         unique=True,
-        doc="Unique index of element (type UUID)",
+        doc="Уникальный идентификатор строки (UUID)",
     )
 
-    dt_created = Column(DateTime(timezone=True), server_default=func.now())
+    dt_created = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        doc="Время появления записи (TimeStamp)"
+    )

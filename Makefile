@@ -20,3 +20,12 @@ down: ##@Docker Stop app
 
 psql: ##@Database Connect to PostgreSQL database via psql util
 	docker exec -it $(POSTGRES_HOST) psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
+
+revision:  ##@Database Create new revision file automatically with prefix by datetime
+	docker exec -it backend uv run alembic -c backend/db/alembic.ini revision --autogenerate
+
+upgrade:  ##@Database Apply all migrations to database
+	docker exec -it backend uv run alembic -c backend/db/alembic.ini upgrade head
+
+downgrade:  ##@Database Undo all migrations
+	docker exec -it backend uv run alembic -c backend/db/alembic.ini downgrade base
