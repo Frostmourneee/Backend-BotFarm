@@ -6,7 +6,7 @@ from backend.db.utils import get_password_hash
 
 async def create_user(session: AsyncSession, user_data: UserCreate) -> None:
     """
-    Регистрирует нового пользователя в системе.
+    Регистрирует нового пользователя в системе
     """
     hashed_password = get_password_hash(user_data.password)
     user = User(

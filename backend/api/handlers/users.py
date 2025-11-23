@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
 from backend.api.schemas.users.create import UserCreate, UserCreateResponse
+from backend.api.schemas.users.get_all import UserGetAllResponse
 from backend.db.init_db import get_session
 from backend.crud.users.create import create_user as crud_create_user
+from backend.crud.users.get_all import get_all_users
 
 api_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -35,3 +37,10 @@ async def create_user(
         )
 
     return UserCreateResponse()
+
+@api_router.get("", response_model=list[UserGetAllResponse])
+async def get_users(
+    session: AsyncSession = Depends(get_session)
+) -> list[UserGetAllResponse]:
+    users = await get_all_users(session)
+    return users
