@@ -1,10 +1,9 @@
 from pydantic import AwareDatetime
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update
 from uuid import UUID
 
 from backend.business_logic.exceptions import UserNotFound
-from backend.db.models.user import User
+from backend.crud.users.get_by_id_for_update import get_by_id_for_update
 
 async def update_user_lock(
         session: AsyncSession,
@@ -21,17 +20,10 @@ async def update_user_lock(
     или разблокировали разблокированного. Т.е. возврат -- индикатор
     того, можно ли не делать никакого update
     """
-    # Борьба с состоянием гонки благодаря SELECT FOR UPDATE
-    lock_statement = (
-        select(User)
-        .where(User.id == user_id)
-        .with_for_update()
-    )
-    user = await session.scalar(lock_statement)
+    user = await get_by_id_for_update(session, user_id)
 
     if not user:
         raise UserNotFound()
-
 
     should_unlock_unlocked = user.locktime is None and locktime is None
     should_lock_locked = user.locktime is not None and locktime is not None
@@ -40,12 +32,7 @@ async def update_user_lock(
         return True
 
 
-    update_stmt = (
-        update(User)
-        .where(User.id == user_id)
-        .values(locktime=locktime)
-    )
-    await session.execute(update_stmt)
+    user.locktime = locktime
     await session.commit()
 
     return False
