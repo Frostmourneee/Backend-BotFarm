@@ -13,6 +13,8 @@ from backend.crud.users.create import create_user as crud_create_user
 from backend.crud.users.get_all import get_all_users
 from backend.business_logic.users import update_user_lock
 from backend.business_logic.exceptions import UserNotFound, UserNotBot
+from backend.utils.auth import require_regular_user
+from backend.db.models.user import User
 
 api_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -44,9 +46,30 @@ async def create_user(
 
     return UserCreateResponse()
 
-@api_router.get("", response_model=list[UserGetAllResponse])
+@api_router.get(
+    "",
+    status_code=status.HTTP_200_OK,
+    response_model=list[UserGetAllResponse],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Не авторизован"}
+                }
+            }
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Доступ только для regular"}
+                }
+            }
+        },
+    }
+)
 async def get_users(
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(require_regular_user)
 ) -> list[UserGetAllResponse]:
     users = await get_all_users(session)
     return users
@@ -56,18 +79,33 @@ async def get_users(
     status_code=status.HTTP_200_OK,
     response_model=UserLockResponse,
     responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Не авторизован"}
+                }
+            }
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Доступ только для regular"}
+                }
+            }
+        },
         status.HTTP_404_NOT_FOUND: {
             "content": {
                 "application/json": {
                     "example": {"detail": "Пользователь не найден"}
                 }
             }
-        }
+        },
     }
 )
 async def acquire_lock(
     user_id: UUID,
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(require_regular_user)
 ) -> UserLockResponse:
     try:
         locktime = datetime.now(tz=UTC)
@@ -92,18 +130,33 @@ async def acquire_lock(
     status_code=status.HTTP_200_OK,
     response_model=UserUnlockResponse,
     responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Не авторизован"}
+                }
+            }
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Доступ только для regular"}
+                }
+            }
+        },
         status.HTTP_404_NOT_FOUND: {
             "content": {
                 "application/json": {
                     "example": {"detail": "Пользователь не найден"}
                 }
             }
-        }
+        },
     }
 )
 async def release_lock(
     user_id: UUID,
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(require_regular_user)
 ) -> UserUnlockResponse:
     try:
         is_same_state = await update_user_lock(session, user_id, None)

@@ -3,3 +3,6 @@ class UserNotFound(Exception):
 
 class UserNotBot(Exception):
     pass
+
+class UserNotRegular(Exception):
+    pass
