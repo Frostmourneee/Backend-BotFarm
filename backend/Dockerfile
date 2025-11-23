@@ -4,4 +4,4 @@ COPY pyproject.toml .
 RUN ["uv", "sync"]
 COPY . /app/backend
 EXPOSE 8080
-CMD ["uv", "run", "-m", "backend"]
+CMD ["sh", "-c", "uv run alembic -c backend/db/alembic.ini upgrade head && uv run -m backend"]
