@@ -3,14 +3,14 @@ from uuid import UUID
 from enum import Enum
 
 class EnvironmentEnum(Enum):
-    prod = "prod"
-    preprod = "preprod"
-    stage = "stage"
+    prod = 'prod'
+    preprod = 'preprod'
+    stage = 'stage'
 
 
 class DomainEnum(Enum):
-    canary = "canary"
-    regular = "regular"
+    canary = 'canary'
+    regular = 'regular'
 
 class UserBase(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
@@ -36,7 +36,7 @@ class UserBase(BaseModel):
         description="Название окружения (prod, preprod, stage)"
     )
     domain: DomainEnum = Field(
-        ...,
+        'canary',
         description="Тип пользователя (canary, regular)"
     )
     locktime: AwareDatetime | None = Field(

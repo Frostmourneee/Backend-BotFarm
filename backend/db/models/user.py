@@ -32,6 +32,7 @@ class User(BaseTable):
     domain = Column(
         Enum('canary', 'regular', name='canary_enum'),
         nullable=False,
+        default='canary',
         doc = "Тип пользователя (canary, regular)",
     )
     locktime = Column(
