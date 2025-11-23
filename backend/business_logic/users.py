@@ -2,8 +2,8 @@ from pydantic import AwareDatetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
-from backend.business_logic.exceptions import UserNotFound
-from backend.crud.users.get_bot_by_id_for_update import get_bot_by_id_for_update
+from backend.business_logic.exceptions import UserNotFound, UserNotBot
+from backend.crud.users.get_by_id_for_update import get_by_id_for_update
 
 async def update_user_lock(
         session: AsyncSession,
@@ -20,10 +20,13 @@ async def update_user_lock(
     или разблокировали разблокированного. Т.е. возврат -- индикатор
     того, можно ли не делать никакого update
     """
-    user = await get_bot_by_id_for_update(session, user_id)
+    user = await get_by_id_for_update(session, user_id)
 
     if not user:
         raise UserNotFound()
+
+    if user.domain != 'canary':
+        raise UserNotBot()
 
     should_unlock_unlocked = user.locktime is None and locktime is None
     should_lock_locked = user.locktime is not None and locktime is not None

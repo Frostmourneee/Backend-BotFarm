@@ -12,7 +12,7 @@ from backend.db.init_db import get_session
 from backend.crud.users.create import create_user as crud_create_user
 from backend.crud.users.get_all import get_all_users
 from backend.business_logic.users import update_user_lock
-from backend.business_logic.exceptions import UserNotFound
+from backend.business_logic.exceptions import UserNotFound, UserNotBot
 
 api_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -81,6 +81,11 @@ async def acquire_lock(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Пользователь не найден"
         )
+    except UserNotBot:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Данный пользователь не бот, не годится для теста"
+        )
 
 @api_router.delete(
     "/{user_id}/lock",
@@ -110,4 +115,9 @@ async def release_lock(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Пользователь не найден"
+        )
+    except UserNotBot:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Данный пользователь не бот, не годится для теста"
         )
