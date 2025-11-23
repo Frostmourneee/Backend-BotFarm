@@ -44,4 +44,7 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_users_project_id'), table_name='users')
     op.drop_index(op.f('ix_users_login'), table_name='users')
     op.drop_table('users')
+
+    op.execute('DROP TYPE env_enum')
+    op.execute('DROP TYPE canary_enum')
     # ### end Alembic commands ###

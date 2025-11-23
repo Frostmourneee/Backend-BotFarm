@@ -4,28 +4,29 @@ include $(ENV_FILE)
 export $(shell sed 's/=.*//' $(ENV_FILE))
 endif
 
-# Commands
-help: ##@Help Show this help
-	@echo -e "Usage: make [target] ...\n"
-	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
+REVISION_ARG = $(filter-out $@,$(MAKECMDGOALS))
 
-env: ##@Environment Create .env file with variables
+%:
+	@:
+
+env: ##@Environment Создание .env файла с переменными
 	cat example.env > .env
 
-up: ##@Docker Start app
+up: ##@Docker Запуск всего приложения
 	docker compose up -d --build
 
-down: ##@Docker Stop app
+down: ##@Docker Остановка приложения
 	docker compose down
 
-psql: ##@Database Connect to PostgreSQL database via psql util
-	docker exec -it $(BOT_POSTGRES_HOST) psql -U $(BOT_POSTGRES_USER) -d $(BOT_POSTGRES_DB)
+psql: ##@Database Подключение к базе с помощью утилиты psql
+	docker exec -it $(BOT_POSTGRES_HOST) psql --pset pager=off -U $(BOT_POSTGRES_USER) -d $(BOT_POSTGRES_DB)
 
-revision: ##@Database Create new revision file automatically with prefix by datetime
+revision: ##@Database Создать миграцию
 	docker exec -it backend uv run alembic -c backend/db/alembic.ini revision --autogenerate
 
-upgrade:  ##@Database Apply all migrations to database
-	docker exec -it backend uv run alembic -c backend/db/alembic.ini upgrade head
+upgrade:  ##@Database Накатить миграции до выбранной
+	docker exec -it backend uv run alembic -c backend/db/alembic.ini upgrade $(or $(REVISION_ARG),head)
 
-downgrade:  ##@Database Undo all migrations
-	docker exec -it backend uv run alembic -c backend/db/alembic.ini downgrade base
+downgrade:  ##@Database Откатить миграции до выбранной
+	docker exec -it backend uv run alembic -c backend/db/alembic.ini downgrade $(or $(REVISION_ARG),base)
+
