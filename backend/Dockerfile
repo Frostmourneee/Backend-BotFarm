@@ -4,4 +4,5 @@ COPY pyproject.toml .
 RUN ["uv", "sync"]
 COPY . /app/backend
 EXPOSE 8080
-CMD ["sh", "-c", "uv run alembic -c backend/db/alembic.ini upgrade head && uv run -m backend"]
+ENV PYTHONPATH=/app
+CMD ["sh", "-c", "uv run alembic -c backend/db/alembic.ini upgrade head; uv run backend/scripts/create_admin_user.py; uv run -m backend"]
