@@ -19,7 +19,7 @@ down: ##@Docker Остановка приложения
 	docker compose down
 
 psql: ##@Database Подключение к базе с помощью утилиты psql
-	docker exec -it $(BOT_POSTGRES_HOST) psql --pset pager=off -U $(BOT_POSTGRES_USER) -d $(BOT_POSTGRES_DB)
+	docker exec -it $(POSTGRES_HOST) psql --pset pager=off -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
 revision: ##@Database Создать миграцию
 	docker exec -it backend uv run alembic -c backend/db/alembic.ini revision --autogenerate
