@@ -22,10 +22,9 @@ class DefaultSettings(BaseSettings):
     POSTGRES_HOST: str = Field(default="postgres")
     POSTGRES_PORT: int = Field(default=5432)
 
-    # SECRET_KEY: str = environ.get("SECRET_KEY")
-    # ALGORITHM: str = environ.get("ALGORITHM", "HS256")
-    # ACCESS_TOKEN_EXPIRE_MINUTES: int = environ.get(
-    #     "ACCESS_TOKEN_EXPIRE_MINUTES", 60)
+    SECRET_KEY: str = Field(default="random_letters")
+    ALGORITHM: str = Field(default="HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=60)
 
     @property
     def database_settings(self) -> dict:
