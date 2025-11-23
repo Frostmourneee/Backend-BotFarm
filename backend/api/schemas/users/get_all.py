@@ -1,3 +1,4 @@
+from fastapi import status
 from pydantic import BaseModel, Field, AwareDatetime
 from uuid import UUID
 
@@ -19,3 +20,20 @@ class UserGetAllResponse(UserBase):
         None,
         description="Время наложения блокировки (TimeStamp)"
     )
+
+GET_ALL_RESPONSES = {
+    status.HTTP_401_UNAUTHORIZED: {
+        "content": {
+            "application/json": {
+                "example": {"detail": "Не авторизован"}
+            }
+        }
+    },
+    status.HTTP_403_FORBIDDEN: {
+        "content": {
+            "application/json": {
+                "example": {"detail": "Доступ только для regular"}
+            }
+        }
+    },
+}
