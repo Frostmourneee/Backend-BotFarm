@@ -1,3 +1,5 @@
+from email.policy import default
+
 from sqlalchemy import Column, String, Enum, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from backend.db.models.base import BaseTable
@@ -38,5 +40,6 @@ class User(BaseTable):
     locktime = Column(
         DateTime(timezone=True),
         nullable=True,
+        default=None,
         doc="Время наложения блокировки (TimeStamp)"
     )
