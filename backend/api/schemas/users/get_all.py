@@ -15,3 +15,7 @@ class UserGetAllResponse(UserBase):
         ...,
         description="Время появления записи (TimeStamp)"
     )
+    locktime: AwareDatetime | None = Field(
+        None,
+        description="Время наложения блокировки (TimeStamp)"
+    )

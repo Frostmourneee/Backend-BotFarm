@@ -39,7 +39,3 @@ class UserBase(BaseModel):
         'canary',
         description="Тип пользователя (canary, regular)"
     )
-    locktime: AwareDatetime | None = Field(
-        None,
-        description="Время наложения блокировки (TimeStamp)"
-    )
