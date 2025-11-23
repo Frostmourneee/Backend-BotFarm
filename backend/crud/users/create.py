@@ -4,7 +4,10 @@ from backend.db.models.user import User
 from backend.api.schemas.users.create import UserCreate
 from backend.db.utils import get_password_hash
 
-async def create_user(session: AsyncSession, user_data: UserCreate) -> None:
+async def create_user(
+        session: AsyncSession,
+        user_data: UserCreate
+) -> None:
     """
     Регистрирует нового пользователя в системе
     """
@@ -15,4 +18,3 @@ async def create_user(session: AsyncSession, user_data: UserCreate) -> None:
     )
 
     session.add(user)
-    await session.commit()

@@ -1,7 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field, EmailStr, AwareDatetime
 from uuid import UUID
 from enum import Enum
-from typing import Optional
 
 class EnvironmentEnum(Enum):
     prod = "prod"
@@ -40,7 +39,7 @@ class UserBase(BaseModel):
         ...,
         description="Тип пользователя (canary, regular)"
     )
-    locktime: Optional[AwareDatetime] = Field(
+    locktime: AwareDatetime | None = Field(
         None,
         description="Время наложения блокировки (TimeStamp)"
     )

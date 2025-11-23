@@ -1,4 +1,4 @@
-from .default import DefaultSettings
+from backend.config.default import DefaultSettings
 
 
 def get_settings() -> DefaultSettings:

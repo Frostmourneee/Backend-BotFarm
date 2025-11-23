@@ -7,8 +7,8 @@ async def get_all_users(session: AsyncSession) -> list[User]:
     """
     Возвращает всех пользователей с ботофермы
     """
-    result = await session.execute(select(User))
-    return result.scalars().all()
+    all_users = await session.execute(select(User))
+    return all_users.scalars().all()
 
     # Я думаю, что из формулировки задания я должен вернуть пользователя
     # вместе с паролем. Хотя обычно это очень опасная ситуация и так делать
