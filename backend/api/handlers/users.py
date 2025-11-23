@@ -10,7 +10,7 @@ from backend.api.schemas.users.unlock import UserUnlockResponse
 from backend.db.init_db import get_session
 from backend.crud.users.create import create_user as crud_create_user
 from backend.crud.users.get_all import get_all_users
-from backend.business_logic.users import release_lock as release_user_lock
+from backend.business_logic.users import update_user_lock
 from backend.business_logic.exceptions import UserNotFound
 
 api_router = APIRouter(prefix="/users", tags=["users"])
@@ -76,11 +76,11 @@ async def release_lock(
     session: AsyncSession = Depends(get_session)
 ) -> UserUnlockResponse:
     try:
-        was_locked = await release_user_lock(session, user_id)
+        was_locked = await update_user_lock(session, user_id, None)
         if was_locked:
             return UserUnlockResponse()
 
-        return UserUnlockResponse("Пользователь не был блокирован")
+        return UserUnlockResponse(message="Пользователь не был блокирован")
     except UserNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

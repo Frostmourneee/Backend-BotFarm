@@ -18,3 +18,4 @@ async def create_user(
     )
 
     session.add(user)
+    await session.commit()

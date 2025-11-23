@@ -33,5 +33,6 @@ async def update_user_lock(
         .values(locktime=locktime)
     )
     await session.execute(update_stmt)
+    await session.commit()
 
     return True
