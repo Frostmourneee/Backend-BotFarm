@@ -43,6 +43,6 @@ class DefaultSettings(BaseSettings):
         URI для асинхронного соединения
         """
         return (
-            "postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
+            "postgresql+asyncpg://{user}:{pwd}@{host}:{port}/{db_name}"
             .format(**self.database_settings)
         )
