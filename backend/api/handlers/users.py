@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, UTC
 from uuid import UUID
 
 from backend.api.schemas.users.create import UserCreate, UserCreateResponse
@@ -50,12 +51,36 @@ async def get_users(
     users = await get_all_users(session)
     return users
 
-@api_router.post("/{user_id}/lock", response_model=UserLockResponse)
+@api_router.post(
+    "/{user_id}/lock",
+    status_code=status.HTTP_200_OK,
+    response_model=UserLockResponse,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Пользователь не найден"}
+                }
+            }
+        }
+    }
+)
 async def acquire_lock(
     user_id: UUID,
     session: AsyncSession = Depends(get_session)
 ) -> UserLockResponse:
-    pass
+    try:
+        locktime = datetime.now(tz=UTC)
+        is_same_state = await update_user_lock(session, user_id, locktime)
+        if is_same_state:
+            return UserLockResponse(message="Пользователь уже заблокирован")
+
+        return UserLockResponse()
+    except UserNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Пользователь не найден"
+        )
 
 @api_router.delete(
     "/{user_id}/lock",
@@ -76,11 +101,11 @@ async def release_lock(
     session: AsyncSession = Depends(get_session)
 ) -> UserUnlockResponse:
     try:
-        was_locked = await update_user_lock(session, user_id, None)
-        if was_locked:
-            return UserUnlockResponse()
+        is_same_state = await update_user_lock(session, user_id, None)
+        if is_same_state:
+            return UserUnlockResponse(message="Пользователь не был блокирован")
 
-        return UserUnlockResponse(message="Пользователь не был блокирован")
+        return UserUnlockResponse()
     except UserNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
