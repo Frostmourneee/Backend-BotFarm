@@ -1,17 +1,17 @@
-from datetime import datetime, UTC, timedelta
-import jwt
-from jwt.exceptions import InvalidTokenError
+from datetime import UTC, datetime, timedelta
 
-from fastapi import HTTPException, status, Depends
+import jwt
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.business_logic.exceptions import UserNotFound, UserNotRegular
-from backend.db.models.user import User
-from backend.crud.users.get_by_login import get_user_by_login
-from backend.utils.security import verify_password
 from backend.config.utils import get_settings
+from backend.crud.users.get_by_login import get_user_by_login
 from backend.db.init_db import get_session
+from backend.db.models.user import User
+from backend.utils.security import verify_password
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login")
 

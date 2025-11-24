@@ -1,8 +1,10 @@
-from fastapi import status
-from pydantic import BaseModel, Field, AwareDatetime
 from uuid import UUID
 
+from fastapi import status
+from pydantic import AwareDatetime, BaseModel, Field
+
 from backend.api.schemas.users.base import UserBase
+
 
 class UserGetAll(BaseModel):
     pass

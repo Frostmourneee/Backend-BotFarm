@@ -1,12 +1,9 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 from backend.config.utils import get_settings
-
 from backend.db.models.base import BaseTable
 from backend.db.models.user import User
 

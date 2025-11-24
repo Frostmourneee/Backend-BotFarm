@@ -1,6 +1,7 @@
 from fastapi import status
 from pydantic import BaseModel, Field
 
+
 class UserLock(BaseModel):
     pass
 

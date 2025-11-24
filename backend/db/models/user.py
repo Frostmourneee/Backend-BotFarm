@@ -1,7 +1,8 @@
 from email.policy import default
 
-from sqlalchemy import Column, String, Enum, DateTime
+from sqlalchemy import Column, DateTime, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
+
 from backend.db.models.base import BaseTable
 
 

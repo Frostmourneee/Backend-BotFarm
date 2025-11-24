@@ -1,8 +1,9 @@
-from pydantic import AwareDatetime
-from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
-from backend.business_logic.exceptions import UserNotFound, UserNotBot
+from pydantic import AwareDatetime
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.business_logic.exceptions import UserNotBot, UserNotFound
 from backend.crud.users.get_by_id_for_update import get_user_by_id_for_update
 
 

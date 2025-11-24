@@ -3,9 +3,9 @@ from urllib.parse import urlparse
 from fastapi import FastAPI
 from uvicorn import run
 
+from backend.api.handlers import list_of_routes
 from backend.config.default import DefaultSettings
 from backend.config.utils import get_settings
-from backend.api.handlers import list_of_routes
 
 
 def bind_routes(application: FastAPI, settings: DefaultSettings) -> None:

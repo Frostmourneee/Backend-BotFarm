@@ -2,9 +2,9 @@ import asyncio
 
 from sqlalchemy.exc import IntegrityError
 
-from backend.db.init_db import async_session_factory
-from backend.crud.users.create import create_user
 from backend.api.schemas.users.create import UserCreate
+from backend.crud.users.create import create_user
+from backend.db.init_db import async_session_factory
 
 
 async def create_admin_user():

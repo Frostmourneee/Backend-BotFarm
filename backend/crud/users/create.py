@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.db.models.user import User
 from backend.api.schemas.users.create import UserCreate
+from backend.db.models.user import User
 from backend.utils.security import get_password_hash
 
 

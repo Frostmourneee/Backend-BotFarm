@@ -1,6 +1,8 @@
-from pydantic import BaseModel, ConfigDict, Field, EmailStr, AwareDatetime
-from uuid import UUID
 from enum import Enum
+from uuid import UUID
+
+from pydantic import AwareDatetime, BaseModel, ConfigDict, EmailStr, Field
+
 
 class EnvironmentEnum(Enum):
     prod = 'prod'

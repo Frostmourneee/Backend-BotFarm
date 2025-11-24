@@ -1,23 +1,22 @@
-from fastapi import APIRouter, status, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from uuid import UUID
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from backend.api.schemas.users.create import UserCreate, UserCreateResponse
-from backend.api.schemas.users.get_all import (
-    UserGetAllResponse,
-    GET_ALL_RESPONSES
-)
-from backend.api.schemas.users.lock import UserLockResponse, LOCK_RESPONSES
+from backend.api.schemas.users.get_all import (GET_ALL_RESPONSES,
+                                               UserGetAllResponse)
+from backend.api.schemas.users.lock import LOCK_RESPONSES, UserLockResponse
 from backend.api.schemas.users.unlock import UserUnlockResponse
-from backend.db.init_db import get_session
+from backend.business_logic.exceptions import UserNotBot, UserNotFound
+from backend.business_logic.users import update_user_lock
 from backend.crud.users.create import create_user as crud_create_user
 from backend.crud.users.get_all import get_all_users
-from backend.business_logic.users import update_user_lock
-from backend.business_logic.exceptions import UserNotFound, UserNotBot
-from backend.utils.auth import require_regular_user
+from backend.db.init_db import get_session
 from backend.db.models.user import User
+from backend.utils.auth import require_regular_user
 
 api_router = APIRouter(prefix="/users", tags=["users"])
 
