@@ -31,8 +31,8 @@ services:
       - "${APP_PORT}:8080"
     depends_on:
       - postgres
-    volumes:
-      - ./backend:/app/backend
+#    volumes:
+#      - ./backend:/app/backend
 
   backend-tests:
     build:
