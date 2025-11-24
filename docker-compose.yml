@@ -39,6 +39,8 @@ services:
       context: .
       dockerfile: tests/Dockerfile
     container_name: backend-tests
+    volumes:
+      - ./coverage-reports:/app/htmlcov
 
 volumes:
   pgdata:

@@ -1,12 +1,19 @@
 import httpx
 
 import pytest_asyncio
+from faker import Faker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import event
+import uuid
 
 from backend.db.init_db import get_session
 from backend.__main__ import app
 
+fake = Faker()
+
+def sqlite_gen_random_uuid():
+    return str(uuid.uuid4())
 
 @pytest_asyncio.fixture(scope="function")
 async def db_session():
@@ -15,6 +22,14 @@ async def db_session():
     """
     db_url = "sqlite+aiosqlite:///:memory:"
     engine = create_async_engine(db_url)
+
+    @event.listens_for(engine.sync_engine, "connect")
+    def connect(dbapi_connection, connection_record):
+        dbapi_connection.create_function(
+            "gen_random_uuid",
+            0,
+            sqlite_gen_random_uuid
+        )
 
     async with engine.begin() as conn:
         from backend.db.models.base import Base
@@ -54,3 +69,16 @@ async def client(db_session):
         yield ac
 
     app.dependency_overrides.clear()
+
+@pytest_asyncio.fixture
+async def user_create_data():
+    """
+    Фикстура с данными для создания пользователя
+    """
+    return {
+        "login": fake.email(),
+        "password": "password",
+        "project_id": uuid.uuid4(),
+        "env": fake.random_element(["prod", "stage", "preprod"]),
+        "domain": fake.random_element(["regular", "canary"])
+    }

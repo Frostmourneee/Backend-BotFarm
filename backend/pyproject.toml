@@ -21,6 +21,8 @@ dependencies = [
 
 [dependency-groups]
 test = [
+    "aiosqlite>=0.21.0",
+    "faker>=38.2.0",
     "httpx>=0.28.1",
     "pytest>=9.0.1",
     "pytest-asyncio>=1.3.0",
