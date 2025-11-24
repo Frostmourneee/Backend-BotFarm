@@ -11,7 +11,8 @@ services:
 
   backend:
     image: backend-botfarm_backend:latest
-    build: ./backend
+    build:
+      context: ./backend
     container_name: backend
     env_file: .env
     environment:
@@ -32,6 +33,12 @@ services:
       - postgres
     volumes:
       - ./backend:/app/backend
+
+  backend-tests:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    container_name: backend-tests
 
 volumes:
   pgdata:

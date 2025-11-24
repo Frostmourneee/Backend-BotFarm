@@ -13,7 +13,7 @@ env: ##@Environment Создание .env файла с переменными
 	cat example.env > .env
 
 up: ##@Docker Запуск всего приложения
-	docker compose up -d --build
+	docker compose up backend postgres -d --build
 
 down: ##@Docker Остановка приложения
 	docker compose down
@@ -30,3 +30,5 @@ upgrade:  ##@Database Накатить миграции до выбранной
 downgrade:  ##@Database Откатить миграции до выбранной
 	docker exec -it backend uv run alembic -c backend/db/alembic.ini downgrade $(or $(REVISION_ARG),base)
 
+test:
+	docker compose up backend-tests --build
