@@ -9,7 +9,14 @@ async def get_user_by_login(
         login: str
 ) -> User | None:
     """
-    Ищет пользователя по логину (email)
+    Поиск пользователя по логину (email).
+
+    Args:
+        session: Асинхронная сессия БД
+        login: Логин (email) пользователя
+
+    Returns:
+        User | None: Найденный пользователь или None
     """
     statement = select(User).where(User.login == login)
     return await session.scalar(statement)

@@ -3,9 +3,16 @@ from sqlalchemy import select
 
 from backend.db.models.user import User
 
+
 async def get_all_users(session: AsyncSession) -> list[User]:
     """
-    Возвращает всех пользователей с ботофермы
+    Получение списка всех пользователей ботфермы.
+
+    Args:
+        session: Асинхронная сессия БД
+
+    Returns:
+        list[User]: Список всех пользователей с их данными
     """
     all_users = await session.execute(select(User))
     return all_users.scalars().all()

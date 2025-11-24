@@ -13,7 +13,6 @@ from backend.utils.security import verify_password
 from backend.config.utils import get_settings
 from backend.db.init_db import get_session
 
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login")
 
 
@@ -22,7 +21,18 @@ async def authenticate_user(
         login_data: OAuth2PasswordRequestForm
 ) -> User:
     """
-    Аутентифицирует пользователя по логину и паролю
+    Аутентификация пользователя по логину и паролю.
+
+    Args:
+        session: Сессия БД
+        login_data: Данные для входа
+
+    Returns:
+        User: Аутентифицированный пользователь
+
+    Raises:
+        UserNotFound: Неверный логин или пароль
+        UserNotRegular: Пользователь не regular домена
     """
     user = await get_user_by_login(session, login_data.username)
     if not user:
@@ -42,7 +52,14 @@ def create_access_token(
         expires_delta: int
 ) -> str:
     """
-    Создает JWT токен
+    Создание JWT токена доступа.
+
+    Args:
+        data: Данные для кодирования в токен
+        expires_delta: Время жизни токена в минутах
+
+    Returns:
+        str: Закодированный JWT токен
     """
     to_encode = data.copy()
     expire = datetime.now(tz=UTC) + timedelta(minutes=expires_delta)
@@ -57,12 +74,23 @@ def create_access_token(
 
     return encoded_jwt
 
+
 async def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    session: AsyncSession = Depends(get_session)
+        token: str = Depends(oauth2_scheme),
+        session: AsyncSession = Depends(get_session)
 ) -> User:
     """
-    Получает текущего аутентифицированного пользователя по JWT токену
+    Получение текущего пользователя из JWT токена.
+
+    Args:
+        token: JWT токен из заголовка Authorization
+        session: Сессия БД
+
+    Returns:
+        User: Текущий аутентифицированный пользователь
+
+    Raises:
+        HTTPException: 401 - если токен невалидный или пользователь не найден
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -89,11 +117,21 @@ async def get_current_user(
 
     return user
 
+
 async def require_regular_user(
         user: User = Depends(get_current_user)
 ) -> User:
     """
-    Пользоваться ботофермой могут только настоящие пользователи (разработчики)
+    Проверка что пользователь является regular доменом.
+
+    Args:
+        user: Текущий аутентифицированный пользователь
+
+    Returns:
+        User: Проверенный regular пользователь
+
+    Raises:
+        HTTPException: 403 - если пользователь не regular домена
     """
     if user.domain != "regular":
         raise HTTPException(

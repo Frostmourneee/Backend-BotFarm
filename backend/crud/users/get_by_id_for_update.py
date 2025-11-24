@@ -11,7 +11,14 @@ async def get_user_by_id_for_update(
         user_id: UUID
 ) -> User | None:
     """
-    Возвращает пользователя по id для апдейта
+    Получение пользователя по ID с блокировкой для обновления.
+
+    Args:
+        session: Асинхронная сессия БД
+        user_id: UUID пользователя
+
+    Returns:
+        User | None: Пользователь или None если не найден
     """
     lock_statement = (
         select(User)

@@ -21,6 +21,7 @@ from backend.db.models.user import User
 
 api_router = APIRouter(prefix="/users", tags=["users"])
 
+
 @api_router.post(
     "",
     status_code=status.HTTP_201_CREATED,
@@ -36,9 +37,22 @@ api_router = APIRouter(prefix="/users", tags=["users"])
     }
 )
 async def create_user(
-    user_data: UserCreate,
-    session: AsyncSession = Depends(get_session)
+        user_data: UserCreate,
+        session: AsyncSession = Depends(get_session)
 ) -> UserCreateResponse:
+    """
+    Создание нового пользователя.
+
+    Args:
+        user_data: Данные для создания пользователя
+        session: Сессия БД
+
+    Returns:
+        UserCreateResponse: Пустой ответ об успешном создании
+
+    Raises:
+        HTTPException: 409 - если пользователь с таким логином уже существует
+    """
     try:
         await crud_create_user(session, user_data)
     except IntegrityError:
@@ -49,6 +63,7 @@ async def create_user(
 
     return UserCreateResponse()
 
+
 @api_router.get(
     "",
     status_code=status.HTTP_200_OK,
@@ -56,11 +71,22 @@ async def create_user(
     responses=GET_ALL_RESPONSES,
 )
 async def get_users(
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(require_regular_user)
+        session: AsyncSession = Depends(get_session),
+        user: User = Depends(require_regular_user)
 ) -> list[UserGetAllResponse]:
+    """
+    Получение списка всех пользователей.
+
+    Args:
+        session: Сессия БД
+        user: Авторизованный regular пользователь
+
+    Returns:
+        list[UserGetAllResponse]: Список пользователей
+    """
     users = await get_all_users(session)
     return users
+
 
 @api_router.post(
     "/{user_id}/lock",
@@ -69,10 +95,25 @@ async def get_users(
     responses=LOCK_RESPONSES
 )
 async def acquire_lock(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(require_regular_user)
+        user_id: UUID,
+        session: AsyncSession = Depends(get_session),
+        user: User = Depends(require_regular_user)
 ) -> UserLockResponse:
+    """
+    Блокировка пользователя-бота.
+
+    Args:
+        user_id: UUID пользователя для блокировки
+        session: Сессия БД
+        user: Авторизованный regular пользователь
+
+    Returns:
+        UserLockResponse: Результат операции блокировки
+
+    Raises:
+        HTTPException: 404 - пользователь не найден
+        HTTPException: 422 - пользователь не является ботом
+    """
     try:
         locktime = datetime.now(tz=UTC)
         is_same_state = await update_user_lock(session, user_id, locktime)
@@ -91,6 +132,7 @@ async def acquire_lock(
             detail="Данный пользователь не бот, не годится для теста"
         )
 
+
 @api_router.delete(
     "/{user_id}/lock",
     status_code=status.HTTP_200_OK,
@@ -98,10 +140,25 @@ async def acquire_lock(
     responses=LOCK_RESPONSES
 )
 async def release_lock(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(require_regular_user)
+        user_id: UUID,
+        session: AsyncSession = Depends(get_session),
+        user: User = Depends(require_regular_user)
 ) -> UserUnlockResponse:
+    """
+    Разблокировка пользователя-бота.
+
+    Args:
+        user_id: UUID пользователя для разблокировки
+        session: Сессия БД
+        user: Авторизованный regular пользователь
+
+    Returns:
+        UserUnlockResponse: Результат операции разблокировки
+
+    Raises:
+        HTTPException: 404 - пользователь не найден
+        HTTPException: 422 - пользователь не является ботом
+    """
     try:
         is_same_state = await update_user_lock(session, user_id, None)
         if is_same_state:

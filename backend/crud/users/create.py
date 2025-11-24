@@ -4,12 +4,17 @@ from backend.db.models.user import User
 from backend.api.schemas.users.create import UserCreate
 from backend.utils.security import get_password_hash
 
+
 async def create_user(
         session: AsyncSession,
         user_data: UserCreate
 ) -> None:
     """
-    Регистрирует нового пользователя в системе
+    Создание нового пользователя в БД.
+
+    Args:
+        session: Асинхронная сессия БД
+        user_data: Данные для создания пользователя
     """
     hashed_password = get_password_hash(user_data.password)
     user = User(

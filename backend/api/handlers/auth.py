@@ -1,3 +1,4 @@
+from datetime import timedelta
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,6 +10,7 @@ from backend.business_logic.exceptions import UserNotFound, UserNotRegular
 from backend.utils.auth import authenticate_user, create_access_token
 
 api_router = APIRouter(tags=["Authentification"])
+
 
 @api_router.post(
     "/login",
@@ -32,11 +34,25 @@ api_router = APIRouter(tags=["Authentification"])
     }
 )
 async def login(
-    login_data: OAuth2PasswordRequestForm = Depends(),
-    session: AsyncSession = Depends(get_session),
+        login_data: OAuth2PasswordRequestForm = Depends(),
+        session: AsyncSession = Depends(get_session),
 ) -> LoginResponse:
     """
-    Вход пользователя и получение JWT токена
+    Аутентификация пользователя и выдача JWT токена доступа.
+
+    Процесс аутентификации включает проверку учетных данных пользователя
+    и верификацию его домена.
+
+    Args:
+        login_data: Данные для входа в формате OAuth2 (username и password)
+        session: Асинхронная сессия базы данных
+
+    Returns:
+        LoginResponse: Объект с JWT токеном доступа и типом токена
+
+    Raises:
+        HTTPException: 401 - если пользователь не найден или неверный пароль
+        HTTPException: 403 - если пользователь не является regular доменом
     """
     try:
         user = await authenticate_user(session, login_data)
