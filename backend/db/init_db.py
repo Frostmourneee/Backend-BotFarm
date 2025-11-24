@@ -13,7 +13,9 @@ def create_session_factory():
         expire_on_commit=False,
     )
 
+
 async_session_factory = create_session_factory()
+
 
 async def get_session():
     async with async_session_factory() as session:

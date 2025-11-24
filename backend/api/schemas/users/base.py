@@ -1,7 +1,7 @@
 from enum import Enum
 from uuid import UUID
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class EnvironmentEnum(Enum):
@@ -13,6 +13,7 @@ class EnvironmentEnum(Enum):
 class DomainEnum(Enum):
     canary = 'canary'
     regular = 'regular'
+
 
 class UserBase(BaseModel):
     model_config = ConfigDict(use_enum_values=True)

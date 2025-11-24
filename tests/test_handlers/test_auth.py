@@ -86,6 +86,7 @@ async def test_login_user_not_found(
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json()["detail"] == "Неверный логин или пароль"
 
+
 @pytest.mark.asyncio
 async def test_login_canary_user_forbidden(
         client,

@@ -1,5 +1,3 @@
-from email.policy import default
-
 from sqlalchemy import Column, DateTime, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -36,7 +34,7 @@ class User(BaseTable):
         Enum('canary', 'regular', name='canary_enum'),
         nullable=False,
         default='canary',
-        doc = "Тип пользователя (canary, regular)",
+        doc="Тип пользователя (canary, regular)",
     )
     locktime = Column(
         DateTime(timezone=True),

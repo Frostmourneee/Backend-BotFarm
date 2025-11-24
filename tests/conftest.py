@@ -12,12 +12,15 @@ from backend.db.init_db import get_session
 
 fake = Faker()
 
+
 def sqlite_gen_random_uuid():
     return str(uuid.uuid4())
+
 
 def sqlite_now():
     from datetime import UTC, datetime
     return datetime.now(tz=UTC).replace(tzinfo=None)
+
 
 @pytest_asyncio.fixture(scope="function")
 async def db_session():
@@ -75,6 +78,7 @@ async def client(db_session):
 
     app.dependency_overrides.clear()
 
+
 @pytest_asyncio.fixture
 async def user_create_data():
     """
@@ -87,6 +91,7 @@ async def user_create_data():
         "env": fake.random_element(["prod", "stage", "preprod"]),
         "domain": fake.random_element(["regular", "canary"])
     }
+
 
 @pytest_asyncio.fixture
 async def regular_user_create_data():

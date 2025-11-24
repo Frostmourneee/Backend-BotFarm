@@ -9,6 +9,7 @@ from backend.api.schemas.users.base import UserBase
 class UserGetAll(BaseModel):
     pass
 
+
 class UserGetAllResponse(UserBase):
     id: UUID = Field(
         ...,
@@ -22,6 +23,7 @@ class UserGetAllResponse(UserBase):
         None,
         description="Время наложения блокировки (TimeStamp)"
     )
+
 
 GET_ALL_RESPONSES = {
     status.HTTP_401_UNAUTHORIZED: {
