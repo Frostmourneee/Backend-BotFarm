@@ -1,9 +1,10 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.crud.users.get_by_login import get_user_by_login
 from backend.api.schemas.users.create import UserCreate
 from backend.crud.users.create import create_user
+from backend.crud.users.get_by_login import get_user_by_login
+
 
 @pytest.mark.asyncio
 async def test_get_user_by_login_success(

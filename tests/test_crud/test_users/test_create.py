@@ -1,12 +1,13 @@
+import uuid
+
 import pytest
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.db.models.user import User
 from backend.api.schemas.users.create import UserCreate
 from backend.crud.users.create import create_user
-import uuid
+from backend.db.models.user import User
 
 
 @pytest.mark.asyncio

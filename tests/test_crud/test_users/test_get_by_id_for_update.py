@@ -1,8 +1,10 @@
+import uuid
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.crud.users.get_by_id_for_update import get_user_by_id_for_update
-import uuid
+
 
 @pytest.mark.asyncio
 async def test_get_user_by_id_for_update_not_found(db_session: AsyncSession):

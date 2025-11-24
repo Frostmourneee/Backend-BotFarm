@@ -1,12 +1,14 @@
+import uuid
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.db.models.user import User
 from backend.api.schemas.users.create import UserCreate
 from backend.crud.users.create import create_user
 from backend.crud.users.get_all import get_all_users
+from backend.db.models.user import User
 from tests.conftest import fake
-import uuid
+
 
 @pytest.mark.asyncio
 async def test_get_all_users_empty_db(db_session: AsyncSession):

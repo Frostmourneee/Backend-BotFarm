@@ -1,14 +1,14 @@
-import httpx
-
-import pytest_asyncio
-from faker import Faker
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import event
 import uuid
 
-from backend.db.init_db import get_session
+import httpx
+import pytest_asyncio
+from faker import Faker
+from sqlalchemy import event
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+
 from backend.__main__ import app
+from backend.db.init_db import get_session
 
 fake = Faker()
 
@@ -16,7 +16,7 @@ def sqlite_gen_random_uuid():
     return str(uuid.uuid4())
 
 def sqlite_now():
-    from datetime import datetime, UTC
+    from datetime import UTC, datetime
     return datetime.now(tz=UTC).replace(tzinfo=None)
 
 @pytest_asyncio.fixture(scope="function")
