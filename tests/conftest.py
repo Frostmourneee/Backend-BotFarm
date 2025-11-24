@@ -15,6 +15,10 @@ fake = Faker()
 def sqlite_gen_random_uuid():
     return str(uuid.uuid4())
 
+def sqlite_now():
+    from datetime import datetime, UTC
+    return datetime.now(tz=UTC).replace(tzinfo=None)
+
 @pytest_asyncio.fixture(scope="function")
 async def db_session():
     """
@@ -30,6 +34,7 @@ async def db_session():
             0,
             sqlite_gen_random_uuid
         )
+        dbapi_connection.create_function("now", 0, sqlite_now)
 
     async with engine.begin() as conn:
         from backend.db.models.base import Base
@@ -82,3 +87,40 @@ async def user_create_data():
         "env": fake.random_element(["prod", "stage", "preprod"]),
         "domain": fake.random_element(["regular", "canary"])
     }
+
+@pytest_asyncio.fixture
+async def regular_user_create_data():
+    """
+    Фикстура с данными для создания regular пользователя
+    """
+    return {
+        "login": fake.email(),
+        "password": "password",
+        "project_id": uuid.uuid4(),
+        "env": fake.random_element(["prod", "stage", "preprod"]),
+        "domain": "regular"
+    }
+
+
+@pytest_asyncio.fixture
+async def auth_headers(client, regular_user_create_data):
+    """
+    Фикстура для получения авторизационных headers
+    """
+    user_data_for_api = {
+        **regular_user_create_data,
+        "project_id": str(regular_user_create_data["project_id"])
+    }
+
+    await client.post("/api/v1/users", json=user_data_for_api)
+
+    login_response = await client.post(
+        "/api/v1/login",
+        data={
+            "username": regular_user_create_data["login"],
+            "password": regular_user_create_data["password"]
+        }
+    )
+    token = login_response.json()["access_token"]
+
+    return {"Authorization": f"Bearer {token}"}
